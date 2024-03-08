@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: VkTestApplication
+  datasource:
+    url: jdbc:postgresql://localhost:5432/vktest
+    driverClassName: org.postgresql.Driver
+    username: "admin"
+    password: "admin"
+  jpa:
+    hibernate:
+      ddl-auto: update
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    properties:
+      hibernate.format_sql: true
+token:
+  signing:
+    key: HldPJxTjwhAVfklMnZeLjqWzyXrpviDuNUCRtaYIBQoGSOgsKcFmbE
