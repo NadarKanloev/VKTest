@@ -5,6 +5,6 @@ import org.springframework.data.cassandra.repository.CassandraRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AuditionRepository extends CassandraRepository<Audition, Long > {
+public interface AuditionRepository extends CassandraRepository<Audition, Long> {
 
 }

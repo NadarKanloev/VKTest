@@ -8,6 +8,9 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Сущность для хранения аудита в Cassandra.
+ */
 @Table
 @Getter
 @Setter
@@ -15,26 +18,57 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
+@Builder
 public class Audition {
 
+    /**
+     * Идентификатор аудита.
+     */
     @PrimaryKey
     private Long UUID;
 
+    /**
+     * Временная метка аудита.
+     */
     private LocalDateTime timeStamp;
 
+    /**
+     * Идентификатор пользователя.
+     */
     private String userId;
 
+    /**
+     * Роль пользователя.
+     */
     private String userRole;
 
+    /**
+     * HTTP метод запроса.
+     */
     private String httpMethod;
 
+    /**
+     * Параметры запроса.
+     */
     private HashMap<String, String> requestParams;
 
+    /**
+     * Статус ответа.
+     */
     private String responseStatus;
 
+    /**
+     * Ответ от сервера.
+     */
     private String serverResponse;
 
+    /**
+     * Логи ошибок.
+     */
     private String errorLogs;
 
+    /**
+     * Информация о кэшировании.
+     */
     private String cachingInfo;
 }
