@@ -25,9 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Аутентификация")
 public class AuthController {
 
-    /**
-     * Сервис аутентификации.
-     */
     private final AuthenticationService authenticationService;
 
     /**

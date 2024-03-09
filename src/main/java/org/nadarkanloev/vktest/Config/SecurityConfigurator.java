@@ -55,7 +55,7 @@ public class SecurityConfigurator {
                 .cors(cors -> cors.configurationSource(request -> { // Отключение конфигурации CORS
                     var corsConfigurator = new CorsConfiguration();
                     corsConfigurator.setAllowedOriginPatterns(List.of("*"));
-                    corsConfigurator.setAllowedMethods(List.of("GET", "POST", "DELETE", "OPTIONS"));
+                    corsConfigurator.setAllowedMethods(List.of("GET", "POST", "DELETE", "PUT"));
                     corsConfigurator.setAllowedHeaders(List.of("*"));
                     corsConfigurator.setAllowCredentials(true);
                     return corsConfigurator;
