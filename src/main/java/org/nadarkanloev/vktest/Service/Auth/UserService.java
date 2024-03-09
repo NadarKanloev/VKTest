@@ -71,5 +71,4 @@ public class UserService {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return getByUsername(username);
     }
-
 }
