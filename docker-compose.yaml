@@ -11,8 +11,19 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  cassandra:
+    image: cassandra:latest
+    container_name: my-cassandra
+    ports:
+      - "9042:9042"
+    environment:
+      - CASSANDRA_CLUSTER_NAME=my-cluster
+    volumes:
+      - cassandra_data:/var/lib/cassandra
+
 volumes:
   pgdata:
+  cassandra_data:
 
   #spring-app:
    # image: veventumt/authforstock

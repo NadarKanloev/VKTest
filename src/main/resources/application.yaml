@@ -6,6 +6,10 @@ spring:
     driverClassName: org.postgresql.Driver
     username: "admin"
     password: "admin"
+  cassandra:
+    local-datacenter: datacenter1
+    keyspace-name: vk
+    schema-action: create_if_not_exists
   jpa:
     hibernate:
       ddl-auto: update

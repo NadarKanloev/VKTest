@@ -1,4 +1,4 @@
-package org.nadarkanloev.vktest.Service;
+package org.nadarkanloev.vktest.Service.Auth;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

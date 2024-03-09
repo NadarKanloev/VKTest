@@ -2,7 +2,7 @@ package org.nadarkanloev.vktest.Config;
 
 import lombok.RequiredArgsConstructor;
 import org.nadarkanloev.vktest.FIlter.JwtAuthenticationFilter;
-import org.nadarkanloev.vktest.Service.UserService;
+import org.nadarkanloev.vktest.Service.Auth.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

@@ -1,7 +1,8 @@
-package org.nadarkanloev.vktest.Service;
+package org.nadarkanloev.vktest.Service.Auth;
 
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.nadarkanloev.vktest.Exception.UserAlreadyExistException;
 import org.nadarkanloev.vktest.Model.User;
 import org.nadarkanloev.vktest.Repository.UserRepository;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class UserService {
     private final UserRepository userRepository;
 
@@ -29,12 +31,15 @@ public class UserService {
      * Создание пользователя
      * @param user
      * @return Созданный пользователь
+     * @throws UserAlreadyExistException
      */
     public User create(User user){
-        if(userRepository.existsByUsername(user.getUsername())) {
+        if (userRepository.existsByUsername(user.getUsername())) {
+            log.error("Пользователь с таким именем '{}' уже существует", user.getUsername());
             throw new UserAlreadyExistException("Пользователь с таким именем уже существует");
         }
-        if(userRepository.existsByEmail(user.getEmail())){
+        if (userRepository.existsByEmail(user.getEmail())) {
+            log.error("Пользователь с таким Email '{}' уже существует", user.getEmail());
             throw new UserAlreadyExistException("Пользователь с таким Email уже существует");
         }
         return save(user);

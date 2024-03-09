@@ -21,6 +21,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
+@EqualsAndHashCode
+@ToString
 public class User implements UserDetails {
 
     /**

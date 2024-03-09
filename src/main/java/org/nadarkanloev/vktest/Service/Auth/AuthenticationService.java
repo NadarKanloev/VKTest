@@ -1,13 +1,12 @@
-package org.nadarkanloev.vktest.Service;
+package org.nadarkanloev.vktest.Service.Auth;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.nadarkanloev.vktest.DTO.JwtAuthenticationResponse;
 import org.nadarkanloev.vktest.DTO.SignInRequest;
 import org.nadarkanloev.vktest.DTO.SignUpRequest;
 import org.nadarkanloev.vktest.Enum.Role;
 import org.nadarkanloev.vktest.Model.User;
-import org.nadarkanloev.vktest.Service.JwtService;
-import org.nadarkanloev.vktest.Service.UserService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class AuthenticationService {
     private final UserService userService;
     private final JwtService jwtService;
@@ -36,7 +36,7 @@ public class AuthenticationService {
                 .build();
 
         userService.create(user);
-
+        log.info("Создан пользователь " + user.getUsername() + " с айди" + user.getId());
         var jwt = jwtService.generateToken(user);
         return new JwtAuthenticationResponse(jwt);
     }
@@ -57,6 +57,8 @@ public class AuthenticationService {
         var user = userService
                 .userDetailsService()
                 .loadUserByUsername(request.getUsername());
+
+        log.info("Пользователь с именем " + user.getUsername() + " успешно вошел в систему");
 
         var jwt = jwtService.generateToken(user);
         return new JwtAuthenticationResponse(jwt);

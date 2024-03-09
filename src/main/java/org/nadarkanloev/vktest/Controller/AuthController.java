@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.nadarkanloev.vktest.DTO.JwtAuthenticationResponse;
 import org.nadarkanloev.vktest.DTO.SignInRequest;
 import org.nadarkanloev.vktest.DTO.SignUpRequest;
-import org.nadarkanloev.vktest.Service.AuthenticationService;
+import org.nadarkanloev.vktest.Service.Auth.AuthenticationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
