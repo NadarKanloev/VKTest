@@ -20,10 +20,17 @@ services:
       - CASSANDRA_CLUSTER_NAME=my-cluster
     volumes:
       - cassandra_data:/var/lib/cassandra
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
 
 volumes:
   pgdata:
   cassandra_data:
+  redis_data:
 
   #spring-app:
    # image: veventumt/authforstock

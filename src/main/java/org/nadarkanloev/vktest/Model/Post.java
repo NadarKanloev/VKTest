@@ -2,7 +2,10 @@ package org.nadarkanloev.vktest.Model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jnr.ffi.annotations.SaveError;
 import lombok.*;
+
+import java.io.Serializable;
 
 @Getter
 @Setter
@@ -12,7 +15,7 @@ import lombok.*;
 @ToString
 @EqualsAndHashCode
 @Schema(description = "Модель данных для поста")
-public class Post {
+public class Post implements Serializable {
     @Schema(description = "ID пользователя", example = "1")
     private int userId;
 

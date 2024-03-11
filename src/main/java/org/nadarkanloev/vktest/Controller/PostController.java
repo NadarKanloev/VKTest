@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.nadarkanloev.vktest.DTO.PostRequest;
 import org.nadarkanloev.vktest.Model.Post;
 import org.nadarkanloev.vktest.Service.PostService;
@@ -21,6 +22,7 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping("/api/posts")
 @Tag(name = "Работа со статьями")
+@Log4j2
 public class PostController {
     private final PostService postService;
 
@@ -33,6 +35,7 @@ public class PostController {
     public ResponseEntity<Post> getPostById(@PathVariable int id){
         Post post = postService.getPostById(id);
         if(post == null){
+            log.error("чзх");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(post, HttpStatus.OK);

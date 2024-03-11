@@ -1,4 +1,7 @@
 spring:
+  cache:
+    redis:
+      time-to-live: 10000000
   application:
     name: VkTestApplication
   datasource:
@@ -17,6 +20,10 @@ spring:
     show-sql: true
     properties:
       hibernate.format_sql: true
+  data:
+    redis:
+      host: localhost
+      port: 6379
 token:
   signing:
     key: HldPJxTjwhAVfklMnZeLjqWzyXrpviDuNUCRtaYIBQoGSOgsKcFmbE

@@ -8,6 +8,9 @@ import lombok.extern.log4j.Log4j2;
 import org.nadarkanloev.vktest.Model.Post;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -32,6 +35,7 @@ public class PostService {
 
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
+    private final CacheManager cacheManager;
     private String url = "https://jsonplaceholder.typicode.com/posts";
 
     /**
@@ -55,11 +59,20 @@ public class PostService {
      * @param id Идентификатор поста.
      * @return Пост с указанным идентификатором или пустой пост, если не удалось получить данные.
      */
+    @Cacheable(value = "postsCache", key = "#id")
     public Post getPostById(int id) {
-        url = url + String.format("/%s", id);
-        String json = restTemplate.getForObject(url, String.class);
+        Cache cache = cacheManager.getCache("postCache");
+        Cache.ValueWrapper valueWrapper = cache.get(id);
+        if (valueWrapper != null) {
+            return (Post) valueWrapper.get();
+        }
+
+        String urlWithId = url + String.format("/%s", id);
+        String json = restTemplate.getForObject(urlWithId, String.class);
         try {
-            return objectMapper.readValue(json, Post.class);
+            Post post = objectMapper.readValue(json, Post.class);
+            cache.put(id, post);
+            return post;
         } catch (JsonProcessingException e) {
             log.error("Ошибка при обработке ответа от API", e);
             log.info("Во время запроса произошла ошибка");
