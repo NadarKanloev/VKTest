@@ -2,7 +2,7 @@ package org.nadarkanloev.vktest.Config;
 
 import lombok.RequiredArgsConstructor;
 import org.nadarkanloev.vktest.FIlter.JwtAuthenticationFilter;
-import org.nadarkanloev.vktest.Service.Auth.UserService;
+import org.nadarkanloev.vktest.Service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -62,6 +62,7 @@ public class SecurityConfigurator {
                 }))
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/auth/sign-in/").permitAll()
                         .requestMatchers("/swagger-ui/**", "/swagger-resources/*", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/endpoint", "/admin/**").hasRole("ADMIN")
                         .anyRequest().permitAll())

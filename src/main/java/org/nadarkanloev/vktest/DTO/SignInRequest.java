@@ -40,7 +40,7 @@ public class SignInRequest {
      * @NotBlank
      */
     @Schema(description = "Пароль", example = "jdfvmdfmkv")
-    @Size(min = 8, max = 255, message = "Пароль должен быть от 5 до 255 символов")
+    @Size(min = 5, max = 255, message = "Пароль должен быть от 5 до 255 символов")
     @NotBlank(message = "Пароль не может быть пустым")
     private String password;
 }

@@ -1,4 +1,4 @@
-package org.nadarkanloev.vktest.Service.Auth;
+package org.nadarkanloev.vktest.Service;
 
 
 import lombok.RequiredArgsConstructor;

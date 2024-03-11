@@ -4,11 +4,12 @@ package org.nadarkanloev.vktest.Controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.nadarkanloev.vktest.DTO.JwtAuthenticationResponse;
 import org.nadarkanloev.vktest.DTO.SignInRequest;
 import org.nadarkanloev.vktest.DTO.SignUpRequest;
-import org.nadarkanloev.vktest.Service.Auth.AuthenticationService;
+import org.nadarkanloev.vktest.Service.AuthenticationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/auth")
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Tag(name = "Аутентификация")
 public class AuthController {
 
