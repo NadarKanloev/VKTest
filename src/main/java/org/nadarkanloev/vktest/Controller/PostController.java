@@ -38,7 +38,6 @@ public class PostController {
     public ResponseEntity<Post> getPostById(@PathVariable int id){
         Post post = postService.getPostById(id);
         if(post == null){
-            log.error("чзх");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(post, HttpStatus.OK);

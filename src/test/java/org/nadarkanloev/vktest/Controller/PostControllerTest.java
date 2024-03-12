@@ -56,8 +56,8 @@ public class PostControllerTest {
     @Test
     public void testGetAllPosts() throws Exception {
 
-        List<Post> mockPosts = Arrays.asList(new Post(1, 123, "Title 1", "Body 1", false),
-                new Post(2, 456, "Title 2", "Body 2", false));
+        List<Post> mockPosts = Arrays.asList(new Post(1, 123, "Title 1", "Body 1"),
+                new Post(2, 456, "Title 2", "Body 2"));
         Mockito.when(postService.getAllPosts()).thenReturn(mockPosts);
 
 
@@ -74,7 +74,7 @@ public class PostControllerTest {
     @Test
     public void testGetPostByIdSuccess() throws Exception {
         int postId = 1;
-        Post mockPost = new Post(postId, 123, "Title 1", "Body 1", false);
+        Post mockPost = new Post(postId, 123, "Title 1", "Body 1");
         Mockito.when(postService.getPostById(postId)).thenReturn(mockPost);
 
         ResponseEntity<Post> response = controller.getPostById(postId);
@@ -99,7 +99,7 @@ public class PostControllerTest {
     @Test
     public void testCreatePostSuccess() throws Exception {
         PostRequest postRequest = new PostRequest("New Title", "New Body", 789);
-        Post mockPost = new Post(10, postRequest.getUserId(), postRequest.getTitle(), postRequest.getBody(), false);
+        Post mockPost = new Post(10, postRequest.getUserId(), postRequest.getTitle(), postRequest.getBody());
         PostService mockPostService = Mockito.mock(PostService.class);
         Mockito.when(mockPostService.postPost(postRequest.getTitle(), postRequest.getBody(), postRequest.getUserId())).thenReturn(mockPost);
 

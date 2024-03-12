@@ -29,6 +29,4 @@ public class Post implements Serializable {
     @Schema(description = "Текст поста", example = "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto")
     private String body;
 
-    @Schema(description = "достался объект из кэша или нет")
-    private Boolean cached = true;
 }

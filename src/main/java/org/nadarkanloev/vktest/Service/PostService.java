@@ -20,10 +20,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.annotation.RequestScope;
 
+import javax.sound.sampled.AudioFileFormat;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
+
+import static org.nadarkanloev.vktest.Enum.Role.*;
+import static org.nadarkanloev.vktest.Service.UUIDGenerator.generateUniqueId;
 
 /**
  * Сервис для работы с постами.
@@ -46,13 +51,20 @@ public class PostService {
      * @return Список всех постов.
      */
     public List<Post> getAllPosts() {
+        String userRole = userService.getRole();
+        if(!userRole.equals("ROLE_ADMIN") && !userRole.equals("ROLE_POSTS_VIEWER") && !userRole.equals("ROLE_POSTS_EDITOR")){
+            logAuditon("GET", "None", "none", "403 Forbidden", "-", "Нет доступа");
+            return null;
+        }
         try {
             String json = restTemplate.getForObject(url, String.class);
+            logAuditon("GET", "None", "none", "200 OK", json, "-");
+            log.info(objectMapper.readValue(json, new TypeReference<List<Post>>() {}).toString());
             return objectMapper.readValue(json, new TypeReference<List<Post>>() {});
         } catch (JsonProcessingException e) {
             log.error("Ошибка при обработке ответа от API", e);
+            return Collections.emptyList();
         }
-        return Collections.emptyList();
     }
 
     /**
@@ -63,38 +75,31 @@ public class PostService {
      */
 
     public Post getPostById(int id) {
-        Cache cache = cacheManager.getCache("postCache");
-        Cache.ValueWrapper valueWrapper = cache.get(id);
-        if (valueWrapper != null) {
-            Audition audition = Audition.builder()
-                    .userRole(userService.getRole())
-                    .userId(String.valueOf(userService.getid()))
-                    .httpMethod("GET")
-                    .requestParams(new HashMap<String, String>() {{
-                        put("id", String.valueOf(id));
-                    }})
-                    .cachingInfo("from-cache")
-                    .responseStatus("200 OK")
-                    .errorLogs("-")
-                    .timeStamp(LocalDateTime.now())
-                    .UUID(100030L)
-                    .serverResponse(valueWrapper.get().toString())
-                    .build();
-            auditionRepository.save(audition);
-            log.info(audition.toString());
-            return (Post) valueWrapper.get();
+        //Проверка роли пользователя
+        String userRole = userService.getRole();
+        if(!userRole.equals("ROLE_ADMIN") && !userRole.equals("ROLE_POSTS_VIEWER") && !userRole.equals("ROLE_POSTS_EDITOR")){
+            logAuditon("GET", String.valueOf(id), "none", "403 Forbidden", "-", "Нет доступа");
+            return null;
         }
+        //Проверка кэша
+        Cache cache = cacheManager.getCache("postCache");
+        Cache.ValueWrapper valueWrapper = cache != null ? cache.get(id) : null;
+        if(valueWrapper != null){
+            Post cachedPost = (Post) valueWrapper.get();
+            logAuditon("GET", String.valueOf(id), "from-cache", "200 OK", cachedPost.toString(), "-");
+            return cachedPost;
+        }
+        //Если кэша нет, то запрашиваемся к API
         String urlWithId = url + String.format("/%s", id);
         String json = restTemplate.getForObject(urlWithId, String.class);
         try {
             Post post = objectMapper.readValue(json, Post.class);
-            post.setCached(true);
             cache.put(id, post);
-            post.setCached(false);
+            logAuditon("GET", String.valueOf(id), "None", "200 OK", post.toString(), "-");
             return post;
         } catch (JsonProcessingException e) {
             log.error("Ошибка при обработке ответа от API", e);
-            log.info("Во время запроса произошла ошибка");
+            logAuditon("GET", String.valueOf(id), "None", "500 Internal Server Error", "-", "Ошибка при обработке ответа от API");
             return null;
         }
     }
@@ -108,6 +113,11 @@ public class PostService {
      * @return Созданный пост.
      */
     public Post postPost(String title, String body, int userId) {
+        String userRole = userService.getRole();
+        if(!userRole.equals("ROLE_ADMIN") &&  !userRole.equals("ROLE_POSTS_EDITOR")){
+            logAuditon("POST", title + ", " + body+ "," + userId, "none", "403 Forbidden", "-", "Нет доступа");
+            return null;
+        }
         Post post = Post.builder()
                 .title(title)
                 .userId(userId)
@@ -116,9 +126,16 @@ public class PostService {
         String json = restTemplate.postForObject(url, post, String.class);
 
         try {
+            logAuditon("POST", "None", "none", "200 OK", "-", "-");
             return objectMapper.readValue(json, Post.class);
         } catch (JsonProcessingException e) {
             log.error("Ошибка при обработке ответа от API", e);
+            logAuditon("POST", title + ", " + body+ "," + userId, "none", "500 Internal Server Error", "-", "Ошибка при обработке ответа от API");
+            return null;
+        }
+        catch (HttpClientErrorException e){
+            log.error(e.getStatusCode() + " "+  e.getMessage());
+            logAuditon("POST", title + ", " + body+ "," + userId, "none", "500 Internal Server Error", "-", e.getMessage());
             return null;
         }
     }
@@ -133,6 +150,11 @@ public class PostService {
      * @return true, если обновление выполнено успешно, в противном случае - false.
      */
     public boolean putPost(String title, String body, int userId, int id) {
+        String userRole = userService.getRole();
+        if(!userRole.equals("ROLE_ADMIN") &&  !userRole.equals("ROLE_POSTS_EDITOR")){
+            logAuditon("PUT", title + ", " + body+ "," + userId + id, "none", "403 Forbidden", "-", "Нет доступа");
+            return false;
+        }
         url = url + String.format("/%s", id);
         Post post = Post.builder()
                 .title(title)
@@ -143,15 +165,19 @@ public class PostService {
         try {
             ResponseEntity<Void> responseEntity = restTemplate.exchange(url, HttpMethod.PUT, new HttpEntity<>(post), Void.class);
             log.info(responseEntity.getStatusCode());
+            logAuditon("PUT", title + ", " + body+ "," + userId + id, "none", "203 Accepted", "-", "-");
             return true;
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
                 log.error("Пост с id {} не найден", id);
+                logAuditon("PUT", title + ", " + body+ "," + userId + id, "none", "500 Internal Server Error", "-", String.format("Пост с id {} не найден", id));
+                return false;
             } else {
                 log.error("Ошибка при выполнении запроса PUT для обновления поста", e);
+                logAuditon("PUT", title + ", " + body+ "," + userId + id, "none", "500 Internal Server Error", "-", "Ошибка при выполнении запроса PUT для обновления поста");
+                return false;
             }
         }
-        return false;
     }
 
     /**
@@ -160,7 +186,46 @@ public class PostService {
      * @param id Идентификатор поста.
      */
     public void deletePost(int id) {
+        String userRole = userService.getRole();
+        if(!userRole.equals("ROLE_ADMIN") &&  !userRole.equals("ROLE_POSTS_EDITOR")){
+            logAuditon("DELETE", String.valueOf(id), "none", "403 Forbidden", "-", "Нет доступа");
+            return;
+        }
         url = url + String.format("/%s", id);
-        restTemplate.delete(url);
+        try{
+            restTemplate.delete(url);
+            logAuditon("DELETE", String.valueOf(id), "none", "204 No Content", "-", "-");
+        }catch (HttpClientErrorException e){
+            log.info(e.getStatusCode() + e.getMessage());
+        }
+
+    }
+
+    /**
+     * Запись аудита.
+     *
+     * @param httpMethod      HTTP метод.
+     * @param requestParams   Параметры запроса.
+     * @param cacheInfo       Информация о кэше.
+     * @param responseStatus  Статус ответа.
+     * @param serverResponse  Ответ от сервера.
+     */
+    private void logAuditon(String httpMethod, String requestParams, String cacheInfo, String responseStatus, String serverResponse, String error) {
+        Audition audition = Audition.builder()
+                .section("POSTS")
+                .errorLogs("error")
+                .userRole(userService.getRole())
+                .userId(String.valueOf(userService.getid()))
+                .httpMethod(httpMethod)
+                .requestParams(Collections.singletonMap("requst Params:", requestParams))
+                .cachingInfo(cacheInfo)
+                .errorLogs("-")
+                .timeStamp(LocalDateTime.now())
+                .serverResponse(serverResponse)
+                .UUID(generateUniqueId() + userService.getid())
+                .responseStatus(responseStatus)
+                .build();
+        auditionRepository.save(audition);
+        log.info(audition.toString());
     }
 }

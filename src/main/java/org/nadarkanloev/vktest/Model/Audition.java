@@ -7,6 +7,7 @@ import org.springframework.data.cassandra.core.mapping.Table;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Сущность для хранения аудита в Cassandra.
@@ -26,6 +27,11 @@ public class Audition {
      */
     @PrimaryKey
     private Long UUID;
+
+    /**
+     * Раздел - posts, users или albums
+     */
+    private String section;
 
     /**
      * Временная метка аудита.
@@ -50,7 +56,7 @@ public class Audition {
     /**
      * Параметры запроса.
      */
-    private HashMap<String, String> requestParams;
+    private Map<String, String> requestParams;
 
     /**
      * Статус ответа.

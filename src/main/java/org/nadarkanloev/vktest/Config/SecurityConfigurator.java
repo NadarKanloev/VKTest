@@ -5,6 +5,7 @@ import org.nadarkanloev.vktest.FIlter.JwtAuthenticationFilter;
 import org.nadarkanloev.vktest.Service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -64,8 +65,8 @@ public class SecurityConfigurator {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/auth/sign-in/").permitAll()
                         .requestMatchers("/swagger-ui/**", "/swagger-resources/*", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/endpoint", "/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/posts/").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/posts/").hasAnyRole("ADMIN", "POSTS_EDITOR", "POSTS_VIEWER")
+                        .requestMatchers("/api/posts/**").hasAnyRole("ADMIN", "POSTS_EDITOR")
                         .anyRequest().permitAll())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider())
