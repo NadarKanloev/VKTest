@@ -10,12 +10,15 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.nadarkanloev.vktest.DTO.PostRequest;
+import org.nadarkanloev.vktest.Model.Audition;
 import org.nadarkanloev.vktest.Model.Post;
 import org.nadarkanloev.vktest.Service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController

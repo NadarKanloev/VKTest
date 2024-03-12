@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AuditionRepository extends CassandraRepository<Audition, Long> {
-
+    Audition save(Audition audition);
 }

@@ -10,14 +10,22 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.nadarkanloev.vktest.Controller.PostController;
 import org.nadarkanloev.vktest.DTO.PostRequest;
+import org.nadarkanloev.vktest.Enum.Role;
 import org.nadarkanloev.vktest.Model.Post;
+import org.nadarkanloev.vktest.Model.User;
 import org.nadarkanloev.vktest.Service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,14 +38,26 @@ public class PostControllerTest {
     @InjectMocks
     private PostController controller;
 
+    private User admin;
+
+    public void setup(){
+        admin = User.builder()
+                .role(Role.ROLE_ADMIN)
+                .username("admin")
+                .id(1L)
+                .email("admim@,mail,ru")
+                .password("11111")
+                .build();
+    }
+
     /** Тест GET all posts
      *
      */
     @Test
     public void testGetAllPosts() throws Exception {
 
-        List<Post> mockPosts = Arrays.asList(new Post(1, 123, "Title 1", "Body 1"),
-                new Post(2, 456, "Title 2", "Body 2"));
+        List<Post> mockPosts = Arrays.asList(new Post(1, 123, "Title 1", "Body 1", false),
+                new Post(2, 456, "Title 2", "Body 2", false));
         Mockito.when(postService.getAllPosts()).thenReturn(mockPosts);
 
 
@@ -54,7 +74,7 @@ public class PostControllerTest {
     @Test
     public void testGetPostByIdSuccess() throws Exception {
         int postId = 1;
-        Post mockPost = new Post(postId, 123, "Title 1", "Body 1");
+        Post mockPost = new Post(postId, 123, "Title 1", "Body 1", false);
         Mockito.when(postService.getPostById(postId)).thenReturn(mockPost);
 
         ResponseEntity<Post> response = controller.getPostById(postId);
@@ -79,7 +99,7 @@ public class PostControllerTest {
     @Test
     public void testCreatePostSuccess() throws Exception {
         PostRequest postRequest = new PostRequest("New Title", "New Body", 789);
-        Post mockPost = new Post(10, postRequest.getUserId(), postRequest.getTitle(), postRequest.getBody());
+        Post mockPost = new Post(10, postRequest.getUserId(), postRequest.getTitle(), postRequest.getBody(), false);
         PostService mockPostService = Mockito.mock(PostService.class);
         Mockito.when(mockPostService.postPost(postRequest.getTitle(), postRequest.getBody(), postRequest.getUserId())).thenReturn(mockPost);
 
