@@ -54,6 +54,7 @@ public class PostControllerTest {
      *
      */
     @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void testGetAllPosts() throws Exception {
 
         List<Post> mockPosts = Arrays.asList(new Post(1, 123, "Title 1", "Body 1"),
@@ -72,6 +73,7 @@ public class PostControllerTest {
      *
      */
     @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void testGetPostByIdSuccess() throws Exception {
         int postId = 1;
         Post mockPost = new Post(postId, 123, "Title 1", "Body 1");
@@ -87,6 +89,7 @@ public class PostControllerTest {
      *
      */
     @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void testGetPostByIdNotFound() throws Exception {
         int postId = 1;
         Mockito.when(postService.getPostById(postId)).thenReturn(null);
@@ -97,6 +100,7 @@ public class PostControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void testCreatePostSuccess() throws Exception {
         PostRequest postRequest = new PostRequest("New Title", "New Body", 789);
         Post mockPost = new Post(10, postRequest.getUserId(), postRequest.getTitle(), postRequest.getBody());
@@ -112,6 +116,7 @@ public class PostControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void testCreatePostFailure() throws Exception {
         PostRequest postRequest = new PostRequest("New Title", "New Body", 789);
         PostService mockPostService = Mockito.mock(PostService.class);
@@ -125,6 +130,7 @@ public class PostControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void testPutPostSuccess() throws Exception {
         int postId = 1;
         PostRequest postRequest = new PostRequest("Updated Title", "Updated Body", 789);
@@ -140,6 +146,7 @@ public class PostControllerTest {
         assertEquals(postRequest.getBody(), response.getBody().getBody());
     }
     @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void testDeletePost() throws Exception {
         int postId = 1;
 

@@ -66,7 +66,6 @@ public class SecurityConfigurator {
                     return corsConfigurator;
                 }))
                 .exceptionHandling(exceptions -> exceptions
-
                                 .accessDeniedHandler(accessDeniedHandler())
                 )
                 .authorizeHttpRequests(request -> request
@@ -117,6 +116,11 @@ public class SecurityConfigurator {
             throws Exception {
         return config.getAuthenticationManager();
     }
+
+    /**
+     * Хэндлер ошибки доступа
+     * @return Хэндлер
+     */
     @Bean
     public AccessDeniedHandler accessDeniedHandler() {
         return new ForbiddenHandler(userService, auditionRepository);
