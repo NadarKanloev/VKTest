@@ -30,7 +30,7 @@ public class CacheConfig {
                 .withCacheConfiguration("userCache", RedisCacheConfiguration.defaultCacheConfig()
                         .serializeValuesWith(jsonSerializer)
                         .entryTtl(Duration.ofSeconds(cacheTimeToLive)))
-                .withCacheConfiguration("albumsCache", RedisCacheConfiguration.defaultCacheConfig()
+                .withCacheConfiguration("albumCache", RedisCacheConfiguration.defaultCacheConfig()
                         .serializeValuesWith(jsonSerializer)
                         .entryTtl(Duration.ofSeconds(cacheTimeToLive)))
                 .build();

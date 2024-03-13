@@ -58,6 +58,7 @@ public class PostService {
             return objectMapper.readValue(json, new TypeReference<List<Post>>() {});
         } catch (JsonProcessingException e) {
             log.error("Ошибка при обработке ответа от API", e);
+            logAuditon("GET", "-", "None", "500 Internal Server Error", "-", "Ошибка при обработке ответа от API");
             return Collections.emptyList();
         }
     }
@@ -170,6 +171,7 @@ public class PostService {
             restTemplate.delete(url);
             logAuditon("DELETE", String.valueOf(id), "none", "204 No Content", "-", "-");
         }catch (HttpClientErrorException e){
+            logAuditon("DELETE", String.valueOf(id), "none", "500 Internal Server Error", "-", "-");
             log.info(e.getStatusCode() + e.getMessage());
         }
 

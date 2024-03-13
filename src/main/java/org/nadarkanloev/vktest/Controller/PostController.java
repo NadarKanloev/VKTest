@@ -32,14 +32,12 @@ import java.util.List;
 @Log4j2
 public class PostController {
     private final PostService postService;
-
     @GetMapping
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_POSTS_EDITOR', 'ROLE_POSTS_VIEWER')")
     public ResponseEntity<List<Post>> getAllPosts(){
         List<Post> posts = postService.getAllPosts();
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
-
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_POSTS_EDITOR', 'ROLE_POSTS_VIEWER')")
     @GetMapping("/{id}")
     public ResponseEntity<Post> getPostById(@PathVariable int id){
@@ -63,7 +61,6 @@ public class PostController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_POSTS_EDITOR')")
     @PutMapping("/{id}")
     @Operation(summary = "Обновление поста по id", description = "Этот метод обновляет пост на основе переданных данных")
@@ -81,7 +78,6 @@ public class PostController {
             return ResponseEntity.notFound().build();
         }
     }
-
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_POSTS_EDITOR')")
     @DeleteMapping("/{id}")
     @Operation(summary = "Удаление поста по id")
