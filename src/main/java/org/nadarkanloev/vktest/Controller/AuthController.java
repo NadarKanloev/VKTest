@@ -53,4 +53,5 @@ public class AuthController {
         JwtAuthenticationResponse response = authenticationService.signIn(request);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
 }

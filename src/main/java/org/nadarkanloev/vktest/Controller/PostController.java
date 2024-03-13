@@ -15,8 +15,12 @@ import org.nadarkanloev.vktest.Model.Post;
 import org.nadarkanloev.vktest.Service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,10 +34,13 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_POSTS_EDITOR', 'ROLE_POSTS_VIEWER')")
     public ResponseEntity<List<Post>> getAllPosts(){
         List<Post> posts = postService.getAllPosts();
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_POSTS_EDITOR', 'ROLE_POSTS_VIEWER')")
     @GetMapping("/{id}")
     public ResponseEntity<Post> getPostById(@PathVariable int id){
         Post post = postService.getPostById(id);
@@ -57,6 +64,7 @@ public class PostController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_POSTS_EDITOR')")
     @PutMapping("/{id}")
     @Operation(summary = "Обновление поста по id", description = "Этот метод обновляет пост на основе переданных данных")
     public ResponseEntity<Post> putPost(@PathVariable int id, @RequestBody PostRequest postRequest) {
@@ -74,6 +82,7 @@ public class PostController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_POSTS_EDITOR')")
     @DeleteMapping("/{id}")
     @Operation(summary = "Удаление поста по id")
     public ResponseEntity<Void> deletePost(@PathVariable int id) {

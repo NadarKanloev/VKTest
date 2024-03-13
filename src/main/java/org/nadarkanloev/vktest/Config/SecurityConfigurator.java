@@ -1,7 +1,9 @@
 package org.nadarkanloev.vktest.Config;
 
 import lombok.RequiredArgsConstructor;
+import org.nadarkanloev.vktest.Controller.ForbiddenHandler;
 import org.nadarkanloev.vktest.FIlter.JwtAuthenticationFilter;
+import org.nadarkanloev.vktest.Repository.AuditionRepository;
 import org.nadarkanloev.vktest.Service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +19,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
@@ -42,6 +45,7 @@ public class SecurityConfigurator {
      * Сервис пользователей.
      */
     private final UserService userService;
+    private final AuditionRepository auditionRepository;
 
     /**
      * Настройка цепочки фильтров безопасности.
@@ -61,6 +65,10 @@ public class SecurityConfigurator {
                     corsConfigurator.setAllowCredentials(true);
                     return corsConfigurator;
                 }))
+                .exceptionHandling(exceptions -> exceptions
+
+                                .accessDeniedHandler(accessDeniedHandler())
+                )
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/auth/sign-in/").permitAll()
@@ -108,5 +116,9 @@ public class SecurityConfigurator {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
             throws Exception {
         return config.getAuthenticationManager();
+    }
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        return new ForbiddenHandler(userService, auditionRepository);
     }
 }

@@ -51,11 +51,6 @@ public class PostService {
      * @return Список всех постов.
      */
     public List<Post> getAllPosts() {
-        String userRole = userService.getRole();
-        if(!userRole.equals("ROLE_ADMIN") && !userRole.equals("ROLE_POSTS_VIEWER") && !userRole.equals("ROLE_POSTS_EDITOR")){
-            logAuditon("GET", "None", "none", "403 Forbidden", "-", "Нет доступа");
-            return null;
-        }
         try {
             String json = restTemplate.getForObject(url, String.class);
             logAuditon("GET", "None", "none", "200 OK", json, "-");
@@ -75,12 +70,6 @@ public class PostService {
      */
 
     public Post getPostById(int id) {
-        //Проверка роли пользователя
-        String userRole = userService.getRole();
-        if(!userRole.equals("ROLE_ADMIN") && !userRole.equals("ROLE_POSTS_VIEWER") && !userRole.equals("ROLE_POSTS_EDITOR")){
-            logAuditon("GET", String.valueOf(id), "none", "403 Forbidden", "-", "Нет доступа");
-            return null;
-        }
         //Проверка кэша
         Cache cache = cacheManager.getCache("postCache");
         Cache.ValueWrapper valueWrapper = cache != null ? cache.get(id) : null;
@@ -113,11 +102,6 @@ public class PostService {
      * @return Созданный пост.
      */
     public Post postPost(String title, String body, int userId) {
-        String userRole = userService.getRole();
-        if(!userRole.equals("ROLE_ADMIN") &&  !userRole.equals("ROLE_POSTS_EDITOR")){
-            logAuditon("POST", title + ", " + body+ "," + userId, "none", "403 Forbidden", "-", "Нет доступа");
-            return null;
-        }
         Post post = Post.builder()
                 .title(title)
                 .userId(userId)
@@ -150,11 +134,6 @@ public class PostService {
      * @return true, если обновление выполнено успешно, в противном случае - false.
      */
     public boolean putPost(String title, String body, int userId, int id) {
-        String userRole = userService.getRole();
-        if(!userRole.equals("ROLE_ADMIN") &&  !userRole.equals("ROLE_POSTS_EDITOR")){
-            logAuditon("PUT", title + ", " + body+ "," + userId + id, "none", "403 Forbidden", "-", "Нет доступа");
-            return false;
-        }
         url = url + String.format("/%s", id);
         Post post = Post.builder()
                 .title(title)
@@ -186,11 +165,6 @@ public class PostService {
      * @param id Идентификатор поста.
      */
     public void deletePost(int id) {
-        String userRole = userService.getRole();
-        if(!userRole.equals("ROLE_ADMIN") &&  !userRole.equals("ROLE_POSTS_EDITOR")){
-            logAuditon("DELETE", String.valueOf(id), "none", "403 Forbidden", "-", "Нет доступа");
-            return;
-        }
         url = url + String.format("/%s", id);
         try{
             restTemplate.delete(url);
