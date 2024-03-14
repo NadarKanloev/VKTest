@@ -5,6 +5,9 @@
 ```bash
 docker-compose up
 ```
+## Важное примечание
+При первом запуске контейнер Spring может упасть из-за того, что Cassandra не успевает восстановиться из копии. Если это произошло, просто перезапустите контейнер Spring после того, как Cassandra завершит процесс восстановления.
+
 ### [Коллекция запросов POSTMAN](https://www.postman.com/restless-escape-517248/workspace/habraggreagot/collection/27427106-8bc72017-aadf-4883-81a8-e00d90e30008?action=share&creator=27427106)
 
 ## Документация
