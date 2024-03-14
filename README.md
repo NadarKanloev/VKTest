@@ -68,7 +68,7 @@ docker-compose up
 Образы для Spring-приложения, Cassandra и PostgreSQL доступны на моём Docker Hub:
 
 - **Spring-приложение**: [Ссылка на Docker образ Spring-приложения](https://hub.docker.com/repository/docker/veventumt/vktest/general)
-- **Cassandra**: [Ссылка на Docker образ Cassandra](hub.docker.com/repository/docker/veventumt/mypg/general)
+- **Cassandra**: [Ссылка на Docker образ Cassandra](https://hub.docker.com/repository/docker/veventumt/mypg/general)
 - **PostgreSQL**: [Ссылка на Docker образ PostgreSQL](https://hub.docker.com/repository/docker/veventumt/vk-cassandra/general)
   
 В качестве redis-контейнера использовался последний официальный образ [Ссылка на Docker образ Redis](https://hub.docker.com/layers/library/redis/latest/images/sha256-2e791e49d89aa881c7c8c6fa80dd14ea503c6d05b7aec285e7899682a1a7a7f3?context=explore)
