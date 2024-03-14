@@ -76,7 +76,15 @@ public class UserApiService {
         Cache cache = cacheManager.getCache("userCache");
         Cache.ValueWrapper valueWrapper = cache != null ? cache.get(id) : null;
         if(valueWrapper != null){
-            UserApi cachedUser = (UserApi) valueWrapper.get();
+            String cached = (String) valueWrapper.get();
+            UserApi cachedUser = null;
+            try {
+                cachedUser = objectMapper.readValue(cached, UserApi.class);
+            } catch (JsonProcessingException e) {
+                log.error("Ошибка при обработке ответа от API", e);
+                logAudition("GET", String.valueOf(id), "from-cache", "500", "-", "Ошибка при обработке ответа от API");
+                throw new RuntimeException(e);
+            }
             logAudition("GET", String.valueOf(id), "from-cache", "200 OK", cachedUser.toString(), "-");
             return cachedUser;
         }
@@ -87,6 +95,7 @@ public class UserApiService {
             return objectMapper.readValue(json, UserApi.class);
         } catch (JsonProcessingException e) {
             log.error("Ошибка при обработке ответа от API", e);
+            logAudition("GET", String.valueOf(id), "from-cache", "500", "-", "Ошибка при обработке ответа от API");
             return null;
         }
     }

@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   postgres:
-    image: postgres:13.3
+    image: veventumt/mypg:mypg
     environment:
       POSTGRES_DB: "vktest"
       POSTGRES_USER: "admin"
@@ -12,7 +12,7 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   cassandra:
-    image: cassandra:latest
+    image: veventumt/vk-cassandra:vk-cassandra
     container_name: my-cassandra
     ports:
       - "9042:9042"
@@ -26,15 +26,17 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
+  vktest:
+    image: veventumt/vktest:0.0.8
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      - cassandra
+    links:
+      - redis
 
 volumes:
   pgdata:
   cassandra_data:
   redis_data:
-
-  #spring-app:
-   # image: veventumt/authforstock
-    #ports:
-     # - "8080:8080"
-    #depends_on:
-     # - postgres

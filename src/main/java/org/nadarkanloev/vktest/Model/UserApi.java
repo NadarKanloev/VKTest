@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@Builder(access = AccessLevel.PUBLIC)
 @ToString
 @EqualsAndHashCode
 @Schema(description = "Пользователи API")
@@ -18,6 +18,13 @@ public class UserApi implements Serializable {
 
     @Schema(description = "Идентификатор пользователя.", example = "123")
     private int id;
+
+    public UserApi(int id, String name, String username, String email){
+        this.id = id;
+        this.name = name;
+        this.username = username;
+        this.email = email;
+    }
 
     @Schema(description = "Имя пользователя.", example = "John Doe")
     private String name;
