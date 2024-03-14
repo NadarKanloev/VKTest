@@ -13,3 +13,5 @@ docker-compose up
 
 Кроме того, доступна документация Swagger, которая предоставляет описание API и позволяет взаимодействовать с ним в удобном формате. Вы можете найти Swagger документацию по следующей ссылке:
 [http://localhost:8080/swagger-ui/index.html#](http://localhost:8080/swagger-ui/index.html#/)
+![image](https://github.com/NadarKanloev/VKTest/assets/44449982/c0ffa557-b5f2-42ca-93d0-2474bda3533b)
+
